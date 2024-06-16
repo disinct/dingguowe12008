@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.resturant.mapper.ResDishMapper">
+
+    <resultMap type="ResDish" id="ResDishResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="pic"    column="pic"    />
+        <result property="description"    column="description"    />
+        <result property="price"    column="price"    />
+        <result property="category"    column="category"    />
+        <result property="shopId"    column="shopId"    />
+        <result property="createBy"    column="createBy"    />
+        <result property="createTime"    column="createTime"    />
+        <result property="updateBy"    column="updateBy"    />
+        <result property="updateTime"    column="updateTime"    />
+    </resultMap>
+
+    <sql id="selectResDishVo">
+        select id,name,pic,description,price,category,shop_id,create_by,create_by,update_by,update_time from res_dish
+    </sql>
+
+    <select id="selectResDishByParam" parameterType="String" resultMap="ResDishResult">
+        <include refid="selectResDishVo"/>
+        <where>
+            <if test="dishName != null and dishName != ''">
+                name like concat('%', #{dishName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectResDishById" parameterType="Long"
+            resultType="ResDish">
+        <include refid="selectResDishVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertResDish" parameterType="ResDish" useGeneratedKeys="true" keyProperty="id">
+        insert into res_dish(
+            name,pic,description,price,category,shop_id,create_by,create_time,update_by,update_time
+        )
+        values (
+                   #{name}, #{pic}, #{description}, #{price},
+                   #{category}, #{shopId}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}
+               )
+    </insert>
+
+    <update id="updateResDish" parameterType="ResDish">
+        update res_dish
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="pic != null and pic != ''">pic = #{pic},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+            <if test="price != null and price != ''">price = #{price},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="shopId != null">shop_id = #{shopId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteResDishById" parameterType="Long">
+        delete from res_dish where id = #{id}
+    </delete>
+</mapper>
